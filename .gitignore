@@ -1,0 +1,13 @@
+*
+*/
+
+!/README.md
+!/.gitignore
+
+!/Dockerfile
+!/docker-compose.yml
+
+!/init.sh
+
+.DS_Store
+.Rproj.user

@@ -1,0 +1,16 @@
+services:
+  rstudio:
+    image: researchenv:latest
+    container_name: tools
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PASSWORD=rstudio
+      - TZ=Asia/Tokyo
+      - DISABLE_AUTH=true
+      - ROOT=true
+    ports:
+      - 8787:8787
+    volumes:
+      - ./:/home/rstudio
+    restart: on-failure
