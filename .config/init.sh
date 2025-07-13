@@ -38,29 +38,20 @@ fi
 
 rm -r temp
 
-# PATH (~/.local/binをPATHに追加)
-
-printf "%s\n" \
-  'export PATH=$PATH:/home/rstudio/.local/bin' \
-  'export PATH=$(echo $PATH | awk -v RS=":" '\''!a[$1]++ { if (NR > 1) printf RS; printf $1 }'\'')' \
-  > ~/.bashrc
-echo "source ~/.bashrc" > ~/.bash_profile
+# Python 関連
+mkdir -p /home/rstudio/.cache/pipx/venvs
 
 # Latex 関連
 
 ## tinytex (QuartoなどでPDFを作成する場合も必要)
 R -e 'install.packages("tinytex")'
-R -e 'tinytex::install_tinytex(force = TRUE)'
+R -e 'tinytex::install_tinytex(dir = "/home/rstudio/.cache/.TinyTeX", force = TRUE)'
 
-## haranoaji font
-~/.local/bin/tlmgr install haranoaji
-
-## texcount
-~/.local/bin/tlmgr install texcount
-~/.local/bin/tlmgr path add
+## texlive full install (使う場合のみ)
+# tlmgr install scheme-full
 
 ## gnuplot-lua-tikz.sty (Latexにgnuplotのグラフを挿入したい場合は必要)
-mkdir -p ~/.TinyTeX/texmf-local/tex/latex/gnuplot
-cd  ~/.TinyTeX/texmf-local/tex/latex/gnuplot
+mkdir -p /home/rstudio/.cache/.TinyTeX/texmf-local/tex/latex/gnuplot
+cd  /home/rstudio/.cache/.TinyTeX/texmf-local/tex/latex/gnuplot
 gnuplot -e "set term tikz createstyle"
-~/.local/bin/mktexlsr
+mktexlsr

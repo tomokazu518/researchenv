@@ -7,7 +7,7 @@
 !/Dockerfile
 !/docker-compose.yml
 
-!/init.sh
-
+!/.config/
+!/.config/init.sh
 .DS_Store
 .Rproj.user
