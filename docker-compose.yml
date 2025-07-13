@@ -1,7 +1,7 @@
 services:
   rstudio:
-    image: researchenv:latest
-    container_name: tools
+    image: researchtools:latest
+    container_name: researchenv
     environment:
       - PUID=1000
       - PGID=1000
@@ -9,8 +9,20 @@ services:
       - TZ=Asia/Tokyo
       - DISABLE_AUTH=true
       - ROOT=true
+      - PIPX_HOME=/home/rstudio/.cache/pipx
+      - PIPX_BIN_DIR=/home/rstudio/bin
     ports:
       - 8787:8787
     volumes:
-      - ./:/home/rstudio
+      - ./.config:/home/rstudio/.config
+      - cache2:/home/rstudio/.cache
+      - bin2:/home/rstudio/bin
+      - ./projects:/home/rstudio/projects
+      - ./.ssh:/home/rstudio/.ssh
     restart: on-failure
+
+volumes:
+  cache:
+    external: true
+  bin:
+    external: true

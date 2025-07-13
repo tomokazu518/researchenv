@@ -36,19 +36,19 @@ RUN apt update && apt upgrade -y &&  \
       openssh-client \
       curl \
       xz-utils \
-      pipx \
-      locales && \
+      pipx && \
     apt autoremove -y && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Pandocフィルターのインストール
 ## pandoc-crossref
-RUN wget "https://github.com/lierdakil/pandoc-crossref/releases/download/v0.3.18.1/pandoc-crossref-Linux-X64.tar.xz"
+RUN wget "https://github.com/lierdakil/pandoc-crossref/releases/download/v0.3.20/pandoc-crossref-Linux-X64.tar.xz"
 RUN tar xf pandoc-crossref-Linux-X64.tar.xz && \
     mv pandoc-crossref /usr/bin
 
 ## github copilot有効化
 RUN echo "copilot-enabled=1" >> /etc/rstudio/rsession.conf
 
+## クリーンアップ
 RUN rm -rf /work
