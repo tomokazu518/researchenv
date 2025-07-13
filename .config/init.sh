@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# docker volumeの所有者変更
+sudo chown -R rstudio:rstudio /home/rstudio/.cache /home/rstudio/bin
+
 # RStudio ServerにHackGenフォントをインストール
 ## HackGenフォントはコードを書くのに適したフォント
 HACKGEN_VER="2.9.0"
