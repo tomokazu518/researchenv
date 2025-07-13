@@ -15,10 +15,10 @@ services:
       - 8787:8787
     volumes:
       - ./.config:/home/rstudio/.config
-      - cache2:/home/rstudio/.cache
-      - bin2:/home/rstudio/bin
       - ./projects:/home/rstudio/projects
       - ./.ssh:/home/rstudio/.ssh
+      - cache:/home/rstudio/.cache
+      - bin:/home/rstudio/bin
     restart: on-failure
 
 volumes:

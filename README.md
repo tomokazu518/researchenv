@@ -5,30 +5,58 @@ RStudioとLatex環境 (tinytex)のDockerコンテナ。ベースイメージはr
 
 ## コンテナの内容
 
-- ベースイメージrocker/rstudioに含まれているもの
-  - R本体
-  - RStudio Server
-  - Pandoc
+- ベースイメージはrocker/rstudio
 - 追加したもの
   - tidyverseとsfをインストールするのに必要なパッケージ
-  - RStudioでgithub copilotを利用可能に
   - Gnuplot
   - Ghostsctipt
   - IPAフォント，Notoフォント
   - [Pandoc-crosreff](https://github.com/lierdakil/pandoc-crossref)
+  - RStudioでgithub copilotを利用可能に
 
 ## 導入方法
 
-![こちら](https://tomokazu518.github.io/public/R_install.html)を参照。
+詳細は![こちら](https://tomokazu518.github.io/public/R_install.html)を参照。
 
-### 基本的な使い方
+最初にdocker volumeを2つ作成。
 
-researchenvフォルダはホームフォルダ(/home/rstudio)としてマウントされるので，その中に`projects`というサブ・フォルダを作成し，さらにその中でプロジェクトごとのサブフォルダを作って使うことを想定している
+```sh
+docker volume create cache
+docker volume create bin
+```
+
+その後，Dockerfileをビルド。
+
+```sh
+docker build --rm -f "Dockerfile" -t researchenv:latest "."
+```
+
+docker composeを使ってコンテナを起動。
+
+```sh
+docker compose up -d
+```
+
+コンテナのシェルで初期設定スクリプトを実行
+
+```
+.config/init.sh
+```
+
+### マウントされるフォルダ
+
+以下のフォルダはコンテナ終了後も内容が保持される。他の場所に保存したものはコンテナ終了時に消えてしまうので，保存が必要なものは以下の場所に保存する。
+
+- `.config`: rstudioの設定など。
+- `project`: コードやデータなど。プロジェクトごとにサブフォルダを作成して使うことを想定している。
+- `.ssh`: sshの設定，鍵。
+- `cache`: docker volume。追加でインストールしたパッケージのバイナリなど。
+- `bin`: docker volume。実行ファイルのシンボリックなど。
 
 ### Python
 
-pipxでpythonのパッケージをインストールできる
-- ~/.local/binにインストールされる
+pipxでpythonのパッケージをインストールできる。
+- 実体は/home/rstudio/.cache/pipxに，実行ファイルのシンボリックリンクが`/home/rstudio/bin`にインストールされる。
 
 ### Visual Studio Codeで使う
 
