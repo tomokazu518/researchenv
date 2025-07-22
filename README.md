@@ -16,7 +16,7 @@ RStudioとLatex環境 (tinytex)のDockerコンテナ。ベースイメージはr
 
 ## 導入方法
 
-詳細は![こちら](https://tomokazu518.github.io/public/R_install.html)を参照。
+詳細は[こちら](https://tomokazu518.github.io/public/R_install.html)を参照。
 
 最初にdocker volumeを2つ作成。
 
@@ -48,10 +48,10 @@ docker compose up -d
 以下のフォルダはコンテナ終了後も内容が保持される。他の場所に保存したものはコンテナ終了時に消えてしまうので，保存が必要なものは以下の場所に保存する。
 
 - `.config`: rstudioの設定など。
-- `project`: コードやデータなど。プロジェクトごとにサブフォルダを作成して使うことを想定している。
 - `.ssh`: sshの設定，鍵。
-- `cache`: docker volume。追加でインストールしたパッケージのバイナリなど。
-- `bin`: docker volume。実行ファイルのシンボリックなど。
+- `project`: コードやデータなど。プロジェクトごとにサブフォルダを作成して使うことを想定している。
+- `.cache`: docker volumeの`cache`にマウント。追加でインストールしたパッケージのバイナリなど。
+- `bin`: docker volumeの`bin`にマウント。実行ファイルのシンボリックなど。
 
 ### Python
 
