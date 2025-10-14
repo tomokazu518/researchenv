@@ -5,7 +5,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - PASSWORD=rstudio
+      - PASSWORD=password
       - TZ=Asia/Tokyo
       - DISABLE_AUTH=true
       - ROOT=true
