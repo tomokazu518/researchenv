@@ -3,6 +3,8 @@
 FROM rocker/rstudio:latest
 
 ARG TARGETARCH
+ENV TARGETARCH=${TARGETARCH}
+
 WORKDIR /work
 
 # 必要なパッケージのインストール
@@ -41,11 +43,30 @@ RUN apt update && apt upgrade -y &&  \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Pandocフィルターのインストール
-## pandoc-crossref
-RUN wget "https://github.com/lierdakil/pandoc-crossref/releases/download/v0.3.20/pandoc-crossref-Linux-X64.tar.xz"
-RUN tar xf pandoc-crossref-Linux-X64.tar.xz && \
-    mv pandoc-crossref /usr/bin
+RUN fc-cache -f -v
+
+# Pandocのインストール
+RUN case "$TARGETARCH" in \
+        "amd64")  ARCH="amd64" ;; \
+        "arm64")  ARCH="arm64" ;; \
+    esac; \
+    PANDOC_VERSION="3.9"; \
+    wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-${ARCH}.tar.gz ;\
+    tar -xf pandoc-${PANDOC_VERSION}-linux-${ARCH}.tar.gz; \
+    mv pandoc-${PANDOC_VERSION}/bin/* /usr/local/bin/; \
+    rm -rf pandoc-${PANDOC_VERSION}*
+
+# Pandoc-crossrefのインストール
+RUN case "$TARGETARCH" in \
+        "amd64")  ARCH="Linux-X64" ;; \
+        "arm64")  ARCH="Linux-ARM64" ;; \
+    esac; \
+    VERSION="0.3.23a"; \
+    wget https://github.com/lierdakil/pandoc-crossref/releases/download/v${VERSION}/pandoc-crossref-${ARCH}.tar.xz; \
+    tar -xf pandoc-crossref-${ARCH}.tar.xz; \
+    mv pandoc-crossref /usr/local/bin/; \
+    chmod +x /usr/local/bin/pandoc-crossref; \
+    rm pandoc-crossref-${ARCH}.tar.xz
 
 ## github copilot有効化
 RUN echo "copilot-enabled=1" >> /etc/rstudio/rsession.conf
