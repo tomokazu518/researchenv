@@ -1,75 +1,42 @@
-# TexLiveのレポジトリをダウンロードしてからビルドする場合
+FROM rocker/tidyverse:latest
 
-FROM rocker/rstudio:latest
+## User
+ARG USERNAME=user
+ARG USER_UID=1000
 
-ARG TARGETARCH
-ENV TARGETARCH=${TARGETARCH}
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    sudo \
+    curl \
+    git \
+    ripgrep \
+    cmake \
+    libcurl4-openssl-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libnode-dev \
+    libpng-dev \
+    libssl-dev \
+    libx11-dev \
+    libxml2-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    gnuplot \
+    ghostscript \
+    fonts-noto-cjk \
+    fonts-ipaexfont \
+    libtiff5-dev \
+    libjpeg-dev \
+    xz-utils \
+    openssh-client \
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /work
 
-# 必要なパッケージのインストール
-RUN apt update && apt upgrade -y &&  \
-    apt install -y \
-      # tidyverse に必要
-      zlib1g-dev \
-      libxml2-dev \
-      libcurl4-openssl-dev \
-      libfontconfig1-dev \
-      libharfbuzz-dev  \
-      libfribidi-dev \
-      libfreetype6-dev \
-      libpng-dev \
-      libtiff5-dev \
-      libjpeg-dev \
-      libx11-dev \
-      # sf に必要
-      libudunits2-dev \
-      libgdal-dev \
-      gdal-bin \
-      # fonts
-      fonts-ipafont \
-      fonts-ipaexfont \
-      fonts-noto-cjk \
-      # tools
-      gnuplot \
-      ghostscript \
-      # other
-      cmake \
-      openssh-client \
-      curl \
-      xz-utils \
-      pipx && \
-    apt autoremove -y && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
+USER $USERNAME
+WORKDIR /home/$USERNAME
 
-RUN fc-cache -f -v
+# uvをインストール
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Pandocのインストール
-RUN case "$TARGETARCH" in \
-        "amd64")  ARCH="amd64" ;; \
-        "arm64")  ARCH="arm64" ;; \
-    esac; \
-    PANDOC_VERSION="3.9"; \
-    wget https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-${ARCH}.tar.gz ;\
-    tar -xf pandoc-${PANDOC_VERSION}-linux-${ARCH}.tar.gz; \
-    mv pandoc-${PANDOC_VERSION}/bin/* /usr/local/bin/; \
-    rm -rf pandoc-${PANDOC_VERSION}*
 
-# Pandoc-crossrefのインストール
-RUN case "$TARGETARCH" in \
-        "amd64")  ARCH="Linux-X64" ;; \
-        "arm64")  ARCH="Linux-ARM64" ;; \
-    esac; \
-    VERSION="0.3.23a"; \
-    wget https://github.com/lierdakil/pandoc-crossref/releases/download/v${VERSION}/pandoc-crossref-${ARCH}.tar.xz; \
-    tar -xf pandoc-crossref-${ARCH}.tar.xz; \
-    mv pandoc-crossref /usr/local/bin/; \
-    chmod +x /usr/local/bin/pandoc-crossref; \
-    rm pandoc-crossref-${ARCH}.tar.xz
-
-## github copilot有効化
-RUN echo "copilot-enabled=1" >> /etc/rstudio/rsession.conf
-
-## クリーンアップ
-RUN rm -rf /work

@@ -1,6 +1,6 @@
 services:
   rstudio:
-    image: researchtools:latest
+    image: rocker/verse:latest
     container_name: researchenv
     environment:
       - PUID=1000
@@ -9,8 +9,6 @@ services:
       - TZ=Asia/Tokyo
       - DISABLE_AUTH=true
       - ROOT=true
-      - PIPX_HOME=/home/rstudio/.cache/pipx
-      - PIPX_BIN_DIR=/home/rstudio/bin
     ports:
       - 8787:8787
     volumes:
